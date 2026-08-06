@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Generate from "./pages/Generate";
 import Explore from "./pages/Explore";
 import Learn from "./pages/Learn";
+import WhatAreAffirmations from "./pages/learn/WhatAreAffirmations";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="generate" element={<Generate />} />
           <Route path="explore" element={<Explore />} />
           <Route path="learn" element={<Learn />} />
+          <Route path="learn/what-are-affirmations" element={<WhatAreAffirmations />} />
           <Route path="about" element={<About />} />
           <Route path="blog" element={<Blog />} />
           <Route path="contact" element={<Contact />} />
