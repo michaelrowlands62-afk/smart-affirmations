@@ -19,6 +19,7 @@ export const guides = [
     color: "#B9A7FF",
     ink: "#241454",
     icon: "✍️",
+    live: true,
   },
   {
     slug: "mirror-work",
@@ -29,6 +30,7 @@ export const guides = [
     color: "#FF7FAA",
     ink: "#4A0620",
     icon: "❤️",
+    live: true,
   },
   {
     slug: "affirmations-while-you-sleep",
@@ -39,6 +41,7 @@ export const guides = [
     color: "#4C7EFF",
     ink: "#031233",
     icon: "🌙",
+    live: true,
   },
   {
     slug: "affirmations-exercise-yoga",
@@ -49,6 +52,7 @@ export const guides = [
     color: "#8FD14F",
     ink: "#1B3300",
     icon: "🌿",
+    live: true,
   },
   {
     slug: "affirmations-in-sport",
@@ -59,6 +63,7 @@ export const guides = [
     color: "#FF6B4A",
     ink: "#3D0F00",
     icon: "🔥",
+    live: true,
   },
   {
     slug: "morning-affirmation-routines",
@@ -69,6 +74,7 @@ export const guides = [
     color: "#FFA53D",
     ink: "#3D1F00",
     icon: "☀️",
+    live: true,
   },
   {
     slug: "affirmations-for-anxiety",
@@ -79,6 +85,7 @@ export const guides = [
     color: "#5FD9C0",
     ink: "#053327",
     icon: "🌬️",
+    live: true,
   },
   {
     slug: "affirmations-for-confidence",
@@ -89,6 +96,7 @@ export const guides = [
     color: "#C64FE0",
     ink: "#3A0142",
     icon: "🚀",
+    live: true,
   },
   {
     slug: "common-affirmation-mistakes",
@@ -99,5 +107,6 @@ export const guides = [
     color: "#FF9ED1",
     ink: "#4A0733",
     icon: "✨",
+    live: true,
   },
 ];
