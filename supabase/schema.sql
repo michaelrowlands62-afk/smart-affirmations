@@ -31,3 +31,28 @@ create table contact_submissions (
   message text not null,
   created_at timestamptz default now()
 );
+
+-- the contact form runs with the public anon key, so lock this table down:
+-- anyone can submit a message, but nobody can read, edit, or delete
+-- submissions through the anon key (only via the Supabase dashboard / service role).
+alter table contact_submissions enable row level security;
+
+create policy "anon can submit contact form"
+  on contact_submissions for insert
+  to anon
+  with check (true);
+
+-- tracks the generate-affirmation edge function's daily rate limit, one row
+-- per device per day. only the edge function (using the service-role key)
+-- ever touches this table, so RLS is enabled with no policies at all —
+-- anon/authenticated clients get zero access, by design.
+create table generation_limits (
+  id uuid primary key default gen_random_uuid(),
+  device_id text not null,
+  request_date date not null default current_date,
+  request_count integer not null default 1,
+  updated_at timestamptz not null default now(),
+  unique (device_id, request_date)
+);
+
+alter table generation_limits enable row level security;

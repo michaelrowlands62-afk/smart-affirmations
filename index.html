@@ -9,5 +9,18 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!--
+      Static duplicate of the contact form for Netlify's build-time form
+      detection. Netlify's bot parses the plain HTML in the published
+      output for forms — it can't see the React-rendered version in
+      src/pages/Contact.jsx, since that only exists after the JS bundle
+      runs in the browser. Field names must match that form exactly.
+    -->
+    <form name="contact" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
   </body>
 </html>

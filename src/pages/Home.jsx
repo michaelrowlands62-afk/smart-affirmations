@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { categories } from "../data/categories";
 import { affirmationOfTheDay } from "../data/affirmations";
+import { useSpeech } from "../lib/useSpeech";
+
+const AOTD_SPEECH_ID = "aotd";
 
 const ICONS = {
   coin: "🪙",
@@ -17,6 +20,8 @@ const ICONS = {
 
 export default function Home() {
   const today = affirmationOfTheDay();
+  const { speakingId, toggleSpeak } = useSpeech();
+  const isSpeaking = speakingId === AOTD_SPEECH_ID;
 
   return (
     <div className="page page-home">
@@ -88,7 +93,9 @@ export default function Home() {
           </span>
           <blockquote>&ldquo;{today.text}&rdquo;</blockquote>
           <div className="aotd-actions">
-            <button className="icon-btn">🔊 listen</button>
+            <button className="icon-btn" onClick={() => toggleSpeak(AOTD_SPEECH_ID, today.text)}>
+              {isSpeaking ? "⏹️ stop" : "🔊 listen"}
+            </button>
             <button className="icon-btn">🤍 save</button>
             <button className="icon-btn">⬇️ share card</button>
           </div>
