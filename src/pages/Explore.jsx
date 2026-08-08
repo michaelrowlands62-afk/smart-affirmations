@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { categories } from "../data/categories";
 import { affirmations } from "../data/affirmations";
 import { useSpeech } from "../lib/useSpeech";
+import { useShareCard } from "../lib/useShareCard";
 
 const ICONS = {
   coin: "🪙",
@@ -22,6 +23,7 @@ export default function Explore() {
   const activeCategory = searchParams.get("category") || "all";
   const [query, setQuery] = useState("");
   const { speakingId, toggleSpeak } = useSpeech();
+  const { shareCard, getShareStatus } = useShareCard();
 
   function selectCategory(slug) {
     if (slug === "all" || slug === activeCategory) {
@@ -98,6 +100,7 @@ export default function Explore() {
             {filtered.map((a, i) => {
               const meta = categories.find((c) => c.slug === a.category);
               const cardId = `${a.category}-${i}`;
+              const shareStatus = getShareStatus(cardId);
               return (
                 <div className="affirmation-card" key={cardId}>
                   <span
@@ -112,7 +115,30 @@ export default function Explore() {
                       {speakingId === cardId ? "⏹️ stop" : "🔊 listen"}
                     </button>
                     <button className="icon-btn">🤍 save</button>
-                    <button className="icon-btn">⬇️ share</button>
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      onClick={() =>
+                        shareCard(cardId, {
+                          text: a.text,
+                          badgeLabel: meta.label,
+                          background: meta.color,
+                          ink: meta.ink,
+                          badgeBackground: meta.color,
+                          badgeInk: meta.ink,
+                          filename: `smart-affirmation-${meta.slug}.png`,
+                        })
+                      }
+                      disabled={shareStatus === "loading"}
+                    >
+                      {shareStatus === "loading"
+                        ? "⏳ rendering…"
+                        : shareStatus === "done"
+                          ? "✅ done"
+                          : shareStatus === "error"
+                            ? "✕ retry"
+                            : "⬇️ share"}
+                    </button>
                   </div>
                 </div>
               );

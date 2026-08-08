@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { categories } from "../data/categories";
+import { tones } from "../data/tones";
 import { supabase } from "../lib/supabaseClient";
 import { getDeviceId } from "../lib/deviceId";
 import { useSpeech } from "../lib/useSpeech";
+import { useShareCard } from "../lib/useShareCard";
 
 const ICONS = {
   coin: "🪙",
@@ -19,26 +21,35 @@ const ICONS = {
 
 const GENERIC_ERROR = "something went wrong generating your affirmation. please try again.";
 const RESULT_SPEECH_ID = "generate-result";
+const RESULT_SHARE_ID = "generate-result";
 
 export default function Generate() {
   const [feeling, setFeeling] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedTone, setSelectedTone] = useState(null);
   const [result, setResult] = useState(null);
   const [lastPrompt, setLastPrompt] = useState(null);
   const [status, setStatus] = useState("idle"); // idle | loading | limited | error
   const [statusMessage, setStatusMessage] = useState("");
   const { speakingId, toggleSpeak } = useSpeech();
+  const { shareCard, getShareStatus } = useShareCard();
 
   function toggleCategory(slug) {
     setSelectedCategory((current) => (current === slug ? null : slug));
   }
 
-  async function runGenerate({ text, categoryLabel, categorySlug }) {
+  function toggleTone(slug) {
+    setSelectedTone((current) => (current === slug ? null : slug));
+  }
+
+  async function runGenerate({ text, categoryLabel, categorySlug, toneSlug }) {
     setStatus("loading");
     setStatusMessage("");
 
+    const toneLabel = toneSlug ? tones.find((t) => t.slug === toneSlug)?.label ?? "" : "";
+
     const { data, error } = await supabase.functions.invoke("generate-affirmation", {
-      body: { text, category: categoryLabel, deviceId: getDeviceId() },
+      body: { text, category: categoryLabel, tone: toneLabel, deviceId: getDeviceId() },
     });
 
     if (error) {
@@ -71,8 +82,8 @@ export default function Generate() {
     const text = trimmedFeeling || `something related to ${categoryMeta?.label ?? "life"}`;
     const categoryLabel = categoryMeta?.label ?? "";
 
-    setLastPrompt({ text, categoryLabel, categorySlug: selectedCategory });
-    await runGenerate({ text, categoryLabel, categorySlug: selectedCategory });
+    setLastPrompt({ text, categoryLabel, categorySlug: selectedCategory, toneSlug: selectedTone });
+    await runGenerate({ text, categoryLabel, categorySlug: selectedCategory, toneSlug: selectedTone });
   }
 
   async function handleTryAgain() {
@@ -88,6 +99,20 @@ export default function Generate() {
   const resultMeta = result?.category ? categories.find((c) => c.slug === result.category) : null;
   const isRegenerating = status === "loading" && Boolean(result);
   const isSpeaking = speakingId === RESULT_SPEECH_ID;
+  const shareStatus = getShareStatus(RESULT_SHARE_ID);
+
+  function handleShare() {
+    if (!result) return;
+    shareCard(RESULT_SHARE_ID, {
+      text: result.text,
+      badgeLabel: resultMeta ? resultMeta.label : "my affirmation",
+      background: resultMeta?.color,
+      ink: resultMeta?.ink,
+      badgeBackground: resultMeta?.color,
+      badgeInk: resultMeta?.ink,
+      filename: `smart-affirmation${resultMeta ? `-${resultMeta.slug}` : ""}.png`,
+    });
+  }
 
   return (
     <div className="page page-generate">
@@ -130,6 +155,22 @@ export default function Generate() {
             ))}
           </div>
 
+          <span className="section-label">or set a tone</span>
+          <div className="chip-row">
+            {tones.map((tone) => (
+              <button
+                type="button"
+                key={tone.slug}
+                className={`category-chip${selectedTone === tone.slug ? " active" : ""}`}
+                style={{ background: tone.color, color: tone.ink, borderColor: tone.ink }}
+                onClick={() => toggleTone(tone.slug)}
+                disabled={status === "loading"}
+              >
+                {tone.icon} {tone.label}
+              </button>
+            ))}
+          </div>
+
           <button
             type="button"
             className="btn btn-primary generate-btn"
@@ -162,7 +203,7 @@ export default function Generate() {
           <div className="result-card">
             {resultMeta && (
               <span
-                className="aotd-stamp"
+                className="result-badge"
                 style={{ background: resultMeta.color, color: resultMeta.ink, borderColor: resultMeta.ink }}
               >
                 {ICONS[resultMeta.icon]} {resultMeta.label}
@@ -179,7 +220,20 @@ export default function Generate() {
                 {isSpeaking ? "⏹️ stop" : "🔊 listen"}
               </button>
               <button className="icon-btn">🤍 save</button>
-              <button className="icon-btn">⬇️ share card</button>
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={handleShare}
+                disabled={isRegenerating || shareStatus === "loading"}
+              >
+                {shareStatus === "loading"
+                  ? "⏳ rendering…"
+                  : shareStatus === "done"
+                    ? "✅ downloaded"
+                    : shareStatus === "error"
+                      ? "✕ try again"
+                      : "⬇️ share card"}
+              </button>
             </div>
           </div>
         ) : (

@@ -1,6 +1,6 @@
 // Supabase Edge Function: generate-affirmation
 //
-// POST { text: string, category?: string, deviceId: string }
+// POST { text: string, category?: string, tone?: string, deviceId: string }
 // -> 200 { affirmation: string }
 // -> 429 { error: "rate_limited", message: string }   (3 generations/device/day)
 // -> 4xx/5xx { error: string }
@@ -28,7 +28,7 @@ function jsonResponse(data: unknown, status = 200): Response {
   });
 }
 
-const SYSTEM_PROMPT = `you write affirmations for "smart affirmations", a site with a lowercase, warm, punchy, no-nonsense voice — grounded and specific, never grandiose or unbelievable.
+const BASE_SYSTEM_PROMPT = `you write affirmations for "smart affirmations", a site with a lowercase, warm, punchy, no-nonsense voice — grounded and specific, never grandiose or unbelievable.
 
 rules:
 - write exactly one affirmation, nothing else — no preamble, no quotation marks, no explanation
@@ -36,14 +36,38 @@ rules:
 - present tense, first person ("i ...")
 - one short sentence, roughly 6-16 words
 - personal and concrete, tied to what the person actually said, not generic
-- warm and encouraging, but grounded — never promise fame, riches, or perfection
-- no exclamation marks, no emoji, no hashtags
+- never promise fame, riches, or perfection
+- no exclamation marks, no emoji, no hashtags`;
 
-examples of the voice:
+const TONE_STYLES: Record<string, string> = {
+  "motivational coach": `tone for this one: motivational coach.
+- energetic and encouraging, like a coach fired up for the person
+- push them forward, lean into momentum and effort
+- still grounded — hype without exclamation marks or empty hype-speak`,
+  "calm & gentle": `tone for this one: calm & gentle.
+- soft, reassuring, unhurried — like a quiet exhale
+- slower rhythm, gentler words, nothing urgent or forceful
+- comfort and steadiness over push or intensity`,
+  "no-nonsense": `tone for this one: no-nonsense.
+- direct, blunt, no fluff — say the thing and stop
+- this is the voice of someone who has trained for years and doesn't waste words: a black belt's directness, not a motivational poster
+- no softening, no hedging, no warmth for warmth's sake — just what's true and useful`,
+};
+
+const DEFAULT_TONE_STYLE = `tone for this one: balanced.
+- warm and encouraging, but grounded and even-keeled
+- neither soft nor blunt — steady, plainspoken confidence`;
+
+const VOICE_EXAMPLES = `examples of the voice:
 i turn effort into opportunity, and opportunity into income.
 i don't shrink to make other people comfortable.
 this spiral has an end, even when it doesn't feel like it.
 hard days build the muscle no one else can see.`;
+
+function buildSystemPrompt(tone: string): string {
+  const toneBlock = (tone && TONE_STYLES[tone.toLowerCase()]) || DEFAULT_TONE_STYLE;
+  return `${BASE_SYSTEM_PROMPT}\n\n${toneBlock}\n\n${VOICE_EXAMPLES}`;
+}
 
 function buildUserPrompt(text: string, category: string): string {
   const categoryLine = category ? `\ncategory they picked: ${category}` : "";
@@ -59,7 +83,7 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "method_not_allowed" }, 405);
   }
 
-  let body: { text?: unknown; category?: unknown; deviceId?: unknown };
+  let body: { text?: unknown; category?: unknown; tone?: unknown; deviceId?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -68,6 +92,7 @@ Deno.serve(async (req: Request) => {
 
   const text = typeof body.text === "string" ? body.text.trim().slice(0, 500) : "";
   const category = typeof body.category === "string" ? body.category.trim().slice(0, 60) : "";
+  const tone = typeof body.tone === "string" ? body.tone.trim().slice(0, 40) : "";
   const deviceId = typeof body.deviceId === "string" ? body.deviceId.trim().slice(0, 100) : "";
 
   if (!text) return jsonResponse({ error: "text_required" }, 400);
@@ -116,7 +141,7 @@ Deno.serve(async (req: Request) => {
     body: JSON.stringify({
       model: OPENAI_MODEL,
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: buildSystemPrompt(tone) },
         { role: "user", content: buildUserPrompt(text, category) },
       ],
       temperature: 0.9,

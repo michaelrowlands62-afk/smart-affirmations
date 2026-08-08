@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { categories } from "../data/categories";
 import { affirmationOfTheDay } from "../data/affirmations";
 import { useSpeech } from "../lib/useSpeech";
+import { useShareCard } from "../lib/useShareCard";
 
 const AOTD_SPEECH_ID = "aotd";
 
@@ -21,7 +22,9 @@ const ICONS = {
 export default function Home() {
   const today = affirmationOfTheDay();
   const { speakingId, toggleSpeak } = useSpeech();
+  const { shareCard, getShareStatus } = useShareCard();
   const isSpeaking = speakingId === AOTD_SPEECH_ID;
+  const shareStatus = getShareStatus(AOTD_SPEECH_ID);
 
   return (
     <div className="page page-home">
@@ -88,7 +91,7 @@ export default function Home() {
 
       <section className="affirmation-of-the-day">
         <div className="aotd-card">
-          <span className="aotd-stamp" style={{ background: "var(--sun)" }}>
+          <span className="aotd-badge" style={{ background: "var(--sun)" }}>
             today's affirmation
           </span>
           <blockquote>&ldquo;{today.text}&rdquo;</blockquote>
@@ -97,7 +100,20 @@ export default function Home() {
               {isSpeaking ? "⏹️ stop" : "🔊 listen"}
             </button>
             <button className="icon-btn">🤍 save</button>
-            <button className="icon-btn">⬇️ share card</button>
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => shareCard(AOTD_SPEECH_ID, { text: today.text, badgeLabel: "today's affirmation" })}
+              disabled={shareStatus === "loading"}
+            >
+              {shareStatus === "loading"
+                ? "⏳ rendering…"
+                : shareStatus === "done"
+                  ? "✅ downloaded"
+                  : shareStatus === "error"
+                    ? "✕ try again"
+                    : "⬇️ share card"}
+            </button>
           </div>
         </div>
       </section>
