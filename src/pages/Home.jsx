@@ -3,6 +3,8 @@ import { categories } from "../data/categories";
 import { affirmationOfTheDay } from "../data/affirmations";
 import { useSpeech } from "../lib/useSpeech";
 import { useShareCard } from "../lib/useShareCard";
+import { useVoicePreference } from "../lib/useVoicePreference";
+import VoicePicker from "../components/VoicePicker";
 
 const AOTD_SPEECH_ID = "aotd";
 
@@ -23,6 +25,7 @@ export default function Home() {
   const today = affirmationOfTheDay();
   const { speakingId, toggleSpeak } = useSpeech();
   const { shareCard, getShareStatus } = useShareCard();
+  const { voiceId, selectVoice } = useVoicePreference();
   const isSpeaking = speakingId === AOTD_SPEECH_ID;
   const shareStatus = getShareStatus(AOTD_SPEECH_ID);
 
@@ -95,8 +98,9 @@ export default function Home() {
             today's affirmation
           </span>
           <blockquote>&ldquo;{today.text}&rdquo;</blockquote>
+          <VoicePicker voiceId={voiceId} onSelect={selectVoice} />
           <div className="aotd-actions">
-            <button className="icon-btn" onClick={() => toggleSpeak(AOTD_SPEECH_ID, today.text)}>
+            <button className="icon-btn" onClick={() => toggleSpeak(AOTD_SPEECH_ID, today.text, voiceId)}>
               {isSpeaking ? "⏹️ stop" : "🔊 listen"}
             </button>
             <button className="icon-btn">🤍 save</button>

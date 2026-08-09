@@ -13,11 +13,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const DAILY_LIMIT = 3;
-const OPENAI_MODEL = "gpt-4o-mini";
+const OPENAI_MODEL = "gpt-4o";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-dev-bypass",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -33,11 +33,39 @@ const BASE_SYSTEM_PROMPT = `you write affirmations for "smart affirmations", a s
 rules:
 - write exactly one affirmation, nothing else — no preamble, no quotation marks, no explanation
 - lowercase only, including the start of the sentence
-- present tense, first person ("i ...")
-- one short sentence, roughly 6-16 words
-- personal and concrete, tied to what the person actually said, not generic
+- roughly 6-16 words
 - never promise fame, riches, or perfection
-- no exclamation marks, no emoji, no hashtags`;
+- no exclamation marks, no emoji, no hashtags
+
+never use cliché affirmation phrases or generic self-help language. banned, do not write anything close to these: "i am worthy", "i am enough", "every day in every way", "i attract abundance", "abundance flows to me", "i radiate", "the universe", "i deserve", "i am capable of anything", "i am becoming the best version of myself", "align with my highest self", "i am a magnet for", "i choose to", "manifest", "good vibes only". if a phrase would fit on a generic inspirational poster, don't write it — go more specific and more strange instead.
+
+reflect the person's actual input back into the affirmation. pull specific words, details, names, events, or fears they mentioned and use them directly — don't launder their input into a generic topic or emotion category. if they mention a specific thing (a person's name, a deadline, a diagnosis, a breakup, a exam, a stage), that specific thing should be visibly present in the affirmation, not abstracted away.
+
+before you write, work out silently — do not output this, output only the final affirmation line —:
+- what is this person's actual struggle or starting point, in their own terms
+- what is genuinely at stake for them: who or what they're doing this for
+- what would a real turning point or declaration sound like for this exact situation, not a generic one
+use that thinking to shape the one line you output. never print the thinking itself.
+
+write the affirmation as a declaration of an already-true internal state, not a description of an activity, effort, or process. state the underlying resolve, determination, or identity as already real right now — don't describe an ongoing search, journey, or effort toward it. avoid phrasing like "i explore," "i work towards," "i am finding ways to," "i am learning to," "i am on a journey to." say the truth underneath that effort as already settled fact.
+
+forbidden, never use these or any equivalent present-continuous "trying to get there" phrasing: "i am finding," "i am exploring," "i am working toward," "i am searching for." these describe a process in motion, not a declared truth — the affirmation must land on the truth itself, not the pursuit of it.
+
+real example of this in practice — input: "i have little money but am determined to find a way to make money online so i can help myself and my children live free." a weak answer would describe the search ("i am finding ways to make money online for my children"). a strong answer, in this spirit, states it as already true and keeps the contrast and the exact noun: "i started with next to nothing, and that's exactly why my kids will grow up free."
+
+preserve specific meaningful nouns from the user's input word-for-word wherever possible. if they say "my children," keep "my children" — don't soften it to "my family." if they say "free," "my son," a named goal, or a named fear, use that exact word, not a vaguer synonym. specificity is the point; don't round it off.
+
+when the input has contrast or tension in it — little vs. what they're building, fear vs. determination, where they started vs. where they're headed — lean into that tension as the core structure of the affirmation. that contrast is usually the sharpest, most specific part of what someone shared, so build the line around it rather than picking one side and dropping the other.
+
+vary sentence structure and length between generations. don't default to the same "i [verb] ___" template every time. mix it up across these kinds of moves:
+- a short punchy fragment (3-6 words)
+- a statement that starts with the situation, not "i"
+- an observation turned into a claim ("this fear is loud, not true")
+- a direct address to the thing they're facing
+- a longer sentence with a turn or contrast in the middle
+first person is still the default center of gravity, but it doesn't have to open every line with "i".
+
+if the person's input is short or vague (a single word, a fragment, no real detail), do not fall back to a generic line. instead invent something specific and original using the category and tone as texture — a concrete image, a plausible scene, or a sharp specific claim — so it still reads like it was written for a real person, not auto-filled.`;
 
 const TONE_STYLES: Record<string, string> = {
   "motivational coach": `tone for this one: motivational coach.
@@ -58,20 +86,32 @@ const DEFAULT_TONE_STYLE = `tone for this one: balanced.
 - warm and encouraging, but grounded and even-keeled
 - neither soft nor blunt — steady, plainspoken confidence`;
 
-const VOICE_EXAMPLES = `examples of the voice:
+const VOICE_EXAMPLES = `examples of the voice and its structural variety (these are style references only — never reuse their content or topics):
 i turn effort into opportunity, and opportunity into income.
-i don't shrink to make other people comfortable.
 this spiral has an end, even when it doesn't feel like it.
-hard days build the muscle no one else can see.`;
+still standing after that email. that's the whole update.
+hard days build the muscle no one else can see.
+the exam doesn't get to decide what you're capable of.
+not shrinking. not today.`;
+
+const DECLARATION_EXAMPLES = `examples of weak, descriptive drafts vs. strong, declarative rewrites (generic illustrations, not affirmations to reuse — just the pattern to follow):
+weak: "i explore ways to earn money for my family" — describes an ongoing search, softens "my family."
+strong: "i started with nothing, and that's exactly why my family will have everything" — states resolve as already true, keeps the contrast, keeps the exact noun.
+
+weak: "i am working towards being less afraid of failing my son" — describes an effort in progress.
+strong: "i can be afraid and still show up for my son" — names the fear directly, states the resolve as already real.
+
+weak: "i am finding ways to feel free after the divorce" — describes a search, generic word "free."
+strong: "the divorce didn't get the last word — free does" — leans into the contrast, keeps "free" and "divorce" exact.`;
 
 function buildSystemPrompt(tone: string): string {
   const toneBlock = (tone && TONE_STYLES[tone.toLowerCase()]) || DEFAULT_TONE_STYLE;
-  return `${BASE_SYSTEM_PROMPT}\n\n${toneBlock}\n\n${VOICE_EXAMPLES}`;
+  return `${BASE_SYSTEM_PROMPT}\n\n${toneBlock}\n\n${VOICE_EXAMPLES}\n\n${DECLARATION_EXAMPLES}`;
 }
 
 function buildUserPrompt(text: string, category: string): string {
   const categoryLine = category ? `\ncategory they picked: ${category}` : "";
-  return `write one affirmation for someone who said: "${text}"${categoryLine}`;
+  return `write one affirmation for someone who said: "${text}"${categoryLine}\n\nuse their specific words and details where you can. if what they said is short or vague, invent something specific and original using the category and tone instead of writing something generic.`;
 }
 
 Deno.serve(async (req: Request) => {
@@ -110,6 +150,14 @@ Deno.serve(async (req: Request) => {
   const supabase = createClient(supabaseUrl, serviceRoleKey);
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD, UTC
 
+  // Local-dev-only bypass: the frontend only sends this header when running under
+  // `vite dev` (import.meta.env.DEV), and it's honored here only if the request also
+  // came from a localhost origin — so it's a no-op for real visitors on the deployed
+  // site, where requests come from the production origin, not localhost.
+  const originHeader = req.headers.get("origin") ?? req.headers.get("referer") ?? "";
+  const isLocalOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(originHeader);
+  const bypassRateLimit = req.headers.get("x-dev-bypass") === "1" && isLocalOrigin;
+
   const { data: existing, error: fetchError } = await supabase
     .from("generation_limits")
     .select("id, request_count")
@@ -122,7 +170,7 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "server_error" }, 500);
   }
 
-  if (existing && existing.request_count >= DAILY_LIMIT) {
+  if (!bypassRateLimit && existing && existing.request_count >= DAILY_LIMIT) {
     return jsonResponse(
       {
         error: "rate_limited",
@@ -144,7 +192,7 @@ Deno.serve(async (req: Request) => {
         { role: "system", content: buildSystemPrompt(tone) },
         { role: "user", content: buildUserPrompt(text, category) },
       ],
-      temperature: 0.9,
+      temperature: 1.0,
       max_tokens: 60,
     }),
   });
@@ -162,18 +210,21 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "generation_failed" }, 502);
   }
 
-  // Only count successful generations against the limit.
-  if (existing) {
-    await supabase
-      .from("generation_limits")
-      .update({ request_count: existing.request_count + 1, updated_at: new Date().toISOString() })
-      .eq("id", existing.id);
-  } else {
-    await supabase.from("generation_limits").insert({
-      device_id: deviceId,
-      request_date: today,
-      request_count: 1,
-    });
+  // Only count successful generations against the limit (skip entirely for the
+  // local-dev bypass so repeated local testing doesn't burn down the real quota).
+  if (!bypassRateLimit) {
+    if (existing) {
+      await supabase
+        .from("generation_limits")
+        .update({ request_count: existing.request_count + 1, updated_at: new Date().toISOString() })
+        .eq("id", existing.id);
+    } else {
+      await supabase.from("generation_limits").insert({
+        device_id: deviceId,
+        request_date: today,
+        request_count: 1,
+      });
+    }
   }
 
   return jsonResponse({ affirmation });

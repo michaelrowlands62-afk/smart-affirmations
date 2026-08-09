@@ -56,3 +56,20 @@ create table generation_limits (
 );
 
 alter table generation_limits enable row level security;
+
+-- tracks the text-to-speech edge function's daily rate limit for ElevenLabs
+-- voice generations, one row per device per day. separate from
+-- generation_limits since text generation and voice playback have their own
+-- caps. only the edge function (using the service-role key) ever touches
+-- this table, so RLS is enabled with no policies at all — anon/authenticated
+-- clients get zero access, by design.
+create table tts_limits (
+  id uuid primary key default gen_random_uuid(),
+  device_id text not null,
+  request_date date not null default current_date,
+  request_count integer not null default 1,
+  updated_at timestamptz not null default now(),
+  unique (device_id, request_date)
+);
+
+alter table tts_limits enable row level security;

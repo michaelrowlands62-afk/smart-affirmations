@@ -4,6 +4,8 @@ import { categories } from "../data/categories";
 import { affirmations } from "../data/affirmations";
 import { useSpeech } from "../lib/useSpeech";
 import { useShareCard } from "../lib/useShareCard";
+import { useVoicePreference } from "../lib/useVoicePreference";
+import VoicePicker from "../components/VoicePicker";
 
 const ICONS = {
   coin: "🪙",
@@ -24,6 +26,7 @@ export default function Explore() {
   const [query, setQuery] = useState("");
   const { speakingId, toggleSpeak } = useSpeech();
   const { shareCard, getShareStatus } = useShareCard();
+  const { voiceId, selectVoice } = useVoicePreference();
 
   function selectCategory(slug) {
     if (slug === "all" || slug === activeCategory) {
@@ -86,6 +89,7 @@ export default function Explore() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
+        <VoicePicker voiceId={voiceId} onSelect={selectVoice} />
       </section>
 
       <section className="affirmation-list">
@@ -111,7 +115,7 @@ export default function Explore() {
                   </span>
                   <blockquote>&ldquo;{a.text}&rdquo;</blockquote>
                   <div className="affirmation-actions">
-                    <button className="icon-btn" onClick={() => toggleSpeak(cardId, a.text)}>
+                    <button className="icon-btn" onClick={() => toggleSpeak(cardId, a.text, voiceId)}>
                       {speakingId === cardId ? "⏹️ stop" : "🔊 listen"}
                     </button>
                     <button className="icon-btn">🤍 save</button>

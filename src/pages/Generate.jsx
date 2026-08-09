@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabaseClient";
 import { getDeviceId } from "../lib/deviceId";
 import { useSpeech } from "../lib/useSpeech";
 import { useShareCard } from "../lib/useShareCard";
+import { useVoicePreference } from "../lib/useVoicePreference";
+import VoicePicker from "../components/VoicePicker";
 
 const ICONS = {
   coin: "🪙",
@@ -33,6 +35,7 @@ export default function Generate() {
   const [statusMessage, setStatusMessage] = useState("");
   const { speakingId, toggleSpeak } = useSpeech();
   const { shareCard, getShareStatus } = useShareCard();
+  const { voiceId, selectVoice } = useVoicePreference();
 
   function toggleCategory(slug) {
     setSelectedCategory((current) => (current === slug ? null : slug));
@@ -50,6 +53,11 @@ export default function Generate() {
 
     const { data, error } = await supabase.functions.invoke("generate-affirmation", {
       body: { text, category: categoryLabel, tone: toneLabel, deviceId: getDeviceId() },
+      // Dev-only header so local testing isn't capped by the 3/day limit. This is
+      // stripped from production builds (import.meta.env.DEV is false) and the
+      // function only honors it when the request also originates from localhost,
+      // so it has no effect once the site is deployed.
+      headers: import.meta.env.DEV ? { "x-dev-bypass": "1" } : undefined,
     });
 
     if (error) {
@@ -93,7 +101,7 @@ export default function Generate() {
 
   function handleListen() {
     if (!result) return;
-    toggleSpeak(RESULT_SPEECH_ID, result.text);
+    toggleSpeak(RESULT_SPEECH_ID, result.text, voiceId);
   }
 
   const resultMeta = result?.category ? categories.find((c) => c.slug === result.category) : null;
@@ -212,6 +220,7 @@ export default function Generate() {
             <blockquote>
               {isRegenerating ? "crafting your next affirmation…" : <>&ldquo;{result.text}&rdquo;</>}
             </blockquote>
+            <VoicePicker voiceId={voiceId} onSelect={selectVoice} disabled={isRegenerating} />
             <div className="result-actions">
               <button className="icon-btn" onClick={handleTryAgain} disabled={status === "loading"}>
                 🔁 try again

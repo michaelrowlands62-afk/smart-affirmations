@@ -272,6 +272,51 @@ p { margin: 0; }
 }
 .icon-btn:hover { background: var(--sun); }
 
+/* ---------- voice picker (Home, Explore, Generate "listen") ---------- */
+.voice-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 4px 0 16px;
+}
+.voice-picker-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.voice-picker-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.voice-chip {
+  font-family: var(--body);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.voice-chip:hover {
+  transform: translate(-1px, -1px);
+}
+.voice-chip.active {
+  background: var(--sun);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.voice-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ---------- seo content blocks ---------- */
 .seo-section {
   padding: 0 24px 56px;
@@ -615,6 +660,13 @@ p { margin: 0; }
   font-size: 15px;
   pointer-events: none;
 }
+.search-bar .voice-picker {
+  justify-content: flex-start;
+  margin-top: 16px;
+}
+.search-bar .voice-picker-chips {
+  justify-content: flex-start;
+}
 
 .affirmation-list {
   padding: 0 24px 56px;
@@ -726,10 +778,69 @@ p { margin: 0; }
 /* ---------- footer ---------- */
 .site-footer {
   margin-top: auto;
-  padding: 24px 32px;
-  border-top: 3px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 32px 32px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 32px 24px;
+}
+.footer-logo {
+  display: inline-block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--paper);
+  letter-spacing: -0.02em;
+}
+.footer-tagline {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 240px;
+  color: rgba(255, 248, 240, 0.65);
+}
+.footer-col-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 240, 0.5);
+  margin-bottom: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-links a {
+  width: fit-content;
+  font-size: 14px;
+  color: rgba(255, 248, 240, 0.85);
+}
+.footer-links a:hover {
+  color: var(--paper);
+  text-decoration: underline;
+}
+.footer-bottom {
+  border-top: 1px solid rgba(255, 248, 240, 0.15);
+  padding: 20px 32px;
   text-align: center;
+}
+.footer-bottom p {
   font-size: 13px;
+  color: rgba(255, 248, 240, 0.55);
+}
+@media (max-width: 720px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 460px) {
+  .footer-inner { grid-template-columns: 1fr; }
 }
 
 /* ---------- learn hub ---------- */
@@ -901,6 +1012,19 @@ p { margin: 0; }
   font-size: 21px;
   line-height: 1.5;
   font-style: italic;
+}
+
+.week-day-block {
+  margin-bottom: 22px;
+}
+.week-day-block:last-child {
+  margin-bottom: 0;
+}
+.week-day-block h3 {
+  text-transform: capitalize;
+}
+.week-day-line {
+  font-weight: 700;
 }
 
 .article-cta {
@@ -1122,4 +1246,55 @@ p { margin: 0; }
   .result-badge { width: 74px; height: 74px; top: -16px; left: -14px; font-size: 9px; }
   .callout-box { flex-direction: column; }
   .form-status { flex-direction: column; align-items: flex-start; }
+}
+
+/* ---------- legal pages (privacy policy, terms of use) ---------- */
+.legal-hero {
+  padding: 48px 24px 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  border-bottom: 2px solid var(--ink);
+}
+.legal-hero h1 {
+  font-size: clamp(26px, 3.6vw, 34px);
+  margin-bottom: 8px;
+}
+.legal-hero .tagline {
+  font-size: 15px;
+  opacity: 0.7;
+}
+.legal-article {
+  padding: 40px 24px 72px;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.legal-section h2 {
+  font-family: var(--body);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.legal-section p {
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+.legal-section p + p {
+  margin-top: 10px;
+}
+.legal-section ul {
+  margin: 10px 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.legal-section li {
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.legal-updated {
+  font-size: 13px;
+  opacity: 0.6;
 }

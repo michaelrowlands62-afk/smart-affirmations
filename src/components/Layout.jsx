@@ -1,14 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
-
-const NAV_LINKS = [
-  { to: "/", label: "home" },
-  { to: "/generate", label: "generate" },
-  { to: "/explore", label: "explore" },
-  { to: "/learn", label: "learn" },
-  { to: "/about", label: "about" },
-  { to: "/blog", label: "blog" },
-  { to: "/contact", label: "contact" },
-];
+import { navLinks } from "../data/navLinks";
+import Footer from "./Footer";
 
 export default function Layout() {
   return (
@@ -16,7 +8,7 @@ export default function Layout() {
       <header className="site-header">
         <Link to="/" className="logo">smart affirmations</Link>
         <nav>
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link key={link.to} to={link.to}>{link.label}</Link>
           ))}
         </nav>
@@ -26,9 +18,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="site-footer">
-        <p>&copy; {new Date().getFullYear()} Smart Affirmations</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
