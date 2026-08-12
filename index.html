@@ -4,7 +4,25 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>smart-affirmations</title>
+    <title>Smart Affirmations</title>
+    <meta
+      name="description"
+      content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Smart Affirmations" />
+    <meta property="og:url" content="https://smartaffirmations.com/" />
+    <meta property="og:title" content="Smart Affirmations" />
+    <meta
+      property="og:description"
+      content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Smart Affirmations" />
+    <meta
+      name="twitter:description"
+      content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+    />
   </head>
   <body>
     <div id="root"></div>
@@ -17,10 +35,11 @@
       src/pages/Contact.jsx, since that only exists after the JS bundle
       runs in the browser. Field names must match that form exactly.
     -->
-    <form name="contact" data-netlify="true" hidden>
+    <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
       <input type="text" name="name" />
       <input type="email" name="email" />
       <textarea name="message"></textarea>
+      <input type="text" name="bot-field" />
     </form>
   </body>
 </html>

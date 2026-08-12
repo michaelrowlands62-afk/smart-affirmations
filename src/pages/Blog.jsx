@@ -9,11 +9,12 @@ export default function Blog() {
   return (
     <div className="page page-blog">
       <Helmet>
-        <title>blog | smart affirmations</title>
+        <title>Blog - Smart Affirmations</title>
         <meta
           name="description"
           content="notes on affirmations, self-talk, and the psychology behind them, from the team behind smart affirmations."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/blog" />
       </Helmet>
 
       <section className="blog-hero">
@@ -33,7 +34,7 @@ export default function Blog() {
             {sortedPosts.map((post) => (
               <Link to={`/blog/${post.slug}`} className="post-card" key={post.slug}>
                 <span className="post-card-date">{formatDate(post.date)}</span>
-                <h3>{post.title}</h3>
+                <h2>{post.title}</h2>
                 <p>{post.excerpt}</p>
                 <span className="post-card-link">read more →</span>
               </Link>

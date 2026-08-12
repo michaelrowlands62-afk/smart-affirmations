@@ -6,9 +6,24 @@ export default function Learn() {
   return (
     <div className="page page-learn">
       <Helmet>
-        <title>learn | smart affirmations</title>
+        <title>Learn - Smart Affirmations</title>
         <meta
           name="description"
+          content="short, honest guides on how affirmations work, how to write your own, and how to use them for sleep, sport, anxiety, confidence and more."
+        />
+        <link rel="canonical" href="https://smartaffirmations.com/learn" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Smart Affirmations" />
+        <meta property="og:url" content="https://smartaffirmations.com/learn" />
+        <meta property="og:title" content="Learn - Smart Affirmations" />
+        <meta
+          property="og:description"
+          content="short, honest guides on how affirmations work, how to write your own, and how to use them for sleep, sport, anxiety, confidence and more."
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Learn - Smart Affirmations" />
+        <meta
+          name="twitter:description"
           content="short, honest guides on how affirmations work, how to write your own, and how to use them for sleep, sport, anxiety, confidence and more."
         />
       </Helmet>
@@ -72,7 +87,8 @@ export default function Learn() {
       </section>
 
       <section className="guide-index">
-        <span className="section-label">the guides</span>
+        <h2 className="sr-only">the guides</h2>
+        <span className="section-label" aria-hidden="true">the guides</span>
         <div className="guide-grid">
           {guides.map((guide) => {
             const CardTag = guide.live ? Link : "div";

@@ -10,6 +10,7 @@ export default function CareerChanges() {
           name="description"
           content="affirmations for career changes — for starting over in a new field, imposter syndrome as a beginner again, and the uncertain stretch between leaving one thing and landing in the next."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-career-change" />
       </Helmet>
 
       <article className="article">

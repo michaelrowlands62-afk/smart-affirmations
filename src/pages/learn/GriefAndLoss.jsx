@@ -10,6 +10,7 @@ export default function GriefAndLoss() {
           name="description"
           content="gentle, honest affirmations for grief and loss — how a short line can act as a small anchor of stability during grief, without rushing the process or replacing real support."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-grief-and-loss" />
       </Helmet>
 
       <article className="article">
@@ -159,7 +160,12 @@ export default function GriefAndLoss() {
               feel ready, or know what stage you're supposed to be in. you just need one sentence
               that's true enough to say out loud without it feeling like a lie — even if that
               sentence is as small as <em>"i'm still here, and that's enough for today."</em> that's
-              not nothing. on a hard day, that's often exactly the size of thing that helps.
+              not nothing. on a hard day, that's often exactly the size of thing that helps. if
+              what you're carrying is closer to a setback than a loss, the{" "}
+              <Link to="/learn/affirmations-for-setbacks-and-failure">
+                affirmations for recovering from setbacks and failure
+              </Link>{" "}
+              guide may be a closer fit.
             </p>
           </section>
 

@@ -7,6 +7,6 @@ export const categories = [
   { slug: "strength", label: "strength", color: "#FF6B4A", ink: "#3D0F00", icon: "flame" },
   { slug: "morning", label: "morning", color: "#FFA53D", ink: "#3D1F00", icon: "sun" },
   { slug: "sleep", label: "sleep", color: "#4C7EFF", ink: "#031233", icon: "moon" },
-  { slug: "motivation", label: "motivation", color: "#C64FE0", ink: "#3A0142", icon: "rocket" },
+  { slug: "motivation", label: "motivation", color: "#C64FE0", ink: "#300136", icon: "rocket" },
   { slug: "self-love", label: "self-love", color: "#FF9ED1", ink: "#4A0733", icon: "sparkle" },
 ];

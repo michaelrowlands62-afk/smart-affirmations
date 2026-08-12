@@ -10,7 +10,7 @@ function encodeFormData(data) {
 }
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", "bot-field": "" });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
 
@@ -32,6 +32,7 @@ export default function Contact() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (status === "submitting") return;
+    if (form["bot-field"]) return; // honeypot tripped — silently drop, don't hit the network
     if (!validate()) return;
 
     setStatus("submitting");
@@ -45,6 +46,7 @@ export default function Contact() {
           name: form.name.trim(),
           email: form.email.trim(),
           message: form.message.trim(),
+          "bot-field": form["bot-field"],
         }),
       });
 
@@ -61,11 +63,12 @@ export default function Contact() {
   return (
     <div className="page page-contact">
       <Helmet>
-        <title>contact us | smart affirmations</title>
+        <title>Contact - Smart Affirmations</title>
         <meta
           name="description"
           content="questions, feedback, or a bug to report? send the smart affirmations team a message and we'll get back to you."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/contact" />
       </Helmet>
 
       <section className="contact-hero">
@@ -84,11 +87,25 @@ export default function Contact() {
           name="contact"
           method="POST"
           data-netlify="true"
+          netlify-honeypot="bot-field"
           className="contact-form-box"
           onSubmit={handleSubmit}
           noValidate
         >
           <input type="hidden" name="form-name" value="contact" />
+
+          <p className="honeypot-field" aria-hidden="true">
+            <label htmlFor="bot-field">leave this field blank</label>
+            <input
+              id="bot-field"
+              name="bot-field"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form["bot-field"]}
+              onChange={handleChange}
+            />
+          </p>
 
           <label htmlFor="name">name</label>
           <input

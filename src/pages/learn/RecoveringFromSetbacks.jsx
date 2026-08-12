@@ -10,6 +10,7 @@ export default function RecoveringFromSetbacks() {
           name="description"
           content="affirmations for recovering from setbacks and failure — for the immediate aftermath of a rejection, mistake, or failed attempt, separating the outcome from your worth, and rebuilding the willingness to try again."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-setbacks-and-failure" />
       </Helmet>
 
       <article className="article">

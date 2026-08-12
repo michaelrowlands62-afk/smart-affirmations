@@ -54,6 +54,7 @@ export default function AffirmationForEveryDay() {
           name="description"
           content="one short, original affirmation for each day of the week — monday through sunday — matched to the different energy and pressure each day tends to bring."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/an-affirmation-for-every-day-of-the-week" />
       </Helmet>
 
       <article className="article">
@@ -183,7 +184,9 @@ export default function AffirmationForEveryDay() {
               recurring pattern like that is a signal about what's actually going on in your specific
               week, not a sign the day-by-day approach has failed. it just means that particular day
               deserves a line built around its specific cause, rather than the general shape most
-              wednesdays tend to share.
+              wednesdays tend to share. pairing this with a proper{" "}
+              <Link to="/learn/morning-affirmation-routines">morning affirmation routine</Link>{" "}
+              makes the day-by-day habit even easier to keep.
             </p>
           </section>
 

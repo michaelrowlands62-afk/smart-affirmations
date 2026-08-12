@@ -10,6 +10,7 @@ export default function AnxietyAffirmations() {
           name="description"
           content="how affirmations for anxiety can offer a moment of grounding during an anxious spike, why they're a coping tool rather than a treatment, and how pairing them with breathing helps."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-anxiety" />
       </Helmet>
 
       <article className="article">

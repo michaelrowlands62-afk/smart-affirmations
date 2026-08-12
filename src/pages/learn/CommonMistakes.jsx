@@ -10,6 +10,7 @@ export default function CommonMistakes() {
           name="description"
           content="the most common affirmation mistakes — too vague, too unbelievable, no real action behind them, inconsistent repetition, and generic borrowed lines — and how to actually fix each one."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/common-affirmation-mistakes" />
       </Helmet>
 
       <article className="article">
@@ -154,7 +155,9 @@ export default function CommonMistakes() {
               it still won't do the consistency or the real-world action for you — that part is
               always on you — but it removes two of the most common failure points before you've
               even started, which makes it a lot easier to build a habit that actually survives past
-              the first week.
+              the first week. for the fuller walkthrough, our{" "}
+              <Link to="/learn/how-to-write-your-own">how to write your own affirmations</Link>{" "}
+              guide covers the process end to end.
             </p>
           </section>
 

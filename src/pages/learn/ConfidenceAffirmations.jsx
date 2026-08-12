@@ -10,6 +10,7 @@ export default function ConfidenceAffirmations() {
           name="description"
           content="how affirmations for confidence work best when they reinforce something you already partly believe, the difference between real competence and empty hype, and using them before pressure moments."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-confidence" />
       </Helmet>
 
       <article className="article">

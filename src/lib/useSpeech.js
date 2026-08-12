@@ -61,11 +61,6 @@ export function useSpeech() {
   async function speakWithElevenLabs(id, text, voiceId) {
     const { data, error } = await supabase.functions.invoke("text-to-speech", {
       body: { text, voiceId, deviceId: getDeviceId() },
-      // Dev-only header so local testing isn't capped by the 5/day limit. This is
-      // stripped from production builds (import.meta.env.DEV is false) and the
-      // function only honors it when the request also originates from localhost,
-      // so it has no effect once the site is deployed.
-      headers: import.meta.env.DEV ? { "x-dev-bypass": "1" } : undefined,
     });
 
     // The user may have hit stop, or switched to another card, while this was

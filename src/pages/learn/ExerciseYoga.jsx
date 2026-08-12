@@ -10,6 +10,7 @@ export default function ExerciseYoga() {
           name="description"
           content="how affirmations for exercise and yoga can help with perceived effort and persistence, backed by real sports psychology research on self-talk — plus how to pair them with breath and movement."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-exercise-yoga" />
       </Helmet>
 
       <article className="article">

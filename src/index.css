@@ -3,7 +3,7 @@
   --paper: #FFF8F0;
   --paper-raised: #FFFFFF;
   --coral: #FF6B4A;
-  --coral-deep: #E8502E;
+  --coral-deep: #C23A1D;
   --sun: #FFC145;
   --mint: #3ECF8E;
   --border: var(--ink);
@@ -22,6 +22,29 @@
 body { margin: 0; }
 
 a { color: inherit; text-decoration: none; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Honeypot spam-trap field: hidden from sighted users and screen readers alike
+   (aria-hidden handles the latter) — real visitors never see or fill this in,
+   so a non-empty submission is a reliable bot signal for Netlify to reject. */
+.honeypot-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 
 h1, h2, h3 {
   font-family: var(--display);
@@ -1105,7 +1128,7 @@ p { margin: 0; }
   background: var(--sun);
   text-transform: lowercase;
 }
-.post-card h3 {
+.post-card h2 {
   font-size: 19px;
   line-height: 1.3;
 }

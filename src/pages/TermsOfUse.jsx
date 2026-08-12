@@ -5,11 +5,12 @@ export default function TermsOfUse() {
   return (
     <div className="page page-legal">
       <Helmet>
-        <title>terms of use | smart affirmations</title>
+        <title>Terms of Use - Smart Affirmations</title>
         <meta
           name="description"
           content="the terms for using smart affirmations, including what the site is (and isn't) for, acceptable use, intellectual property, and liability."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/terms-of-use" />
       </Helmet>
 
       <header className="legal-hero">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { categories } from "../data/categories";
 import { tones } from "../data/tones";
 import { supabase } from "../lib/supabaseClient";
@@ -53,11 +54,6 @@ export default function Generate() {
 
     const { data, error } = await supabase.functions.invoke("generate-affirmation", {
       body: { text, category: categoryLabel, tone: toneLabel, deviceId: getDeviceId() },
-      // Dev-only header so local testing isn't capped by the 3/day limit. This is
-      // stripped from production builds (import.meta.env.DEV is false) and the
-      // function only honors it when the request also originates from localhost,
-      // so it has no effect once the site is deployed.
-      headers: import.meta.env.DEV ? { "x-dev-bypass": "1" } : undefined,
     });
 
     if (error) {
@@ -124,6 +120,29 @@ export default function Generate() {
 
   return (
     <div className="page page-generate">
+      <Helmet>
+        <title>Smart Affirmations</title>
+        <meta
+          name="description"
+          content="tell us how you're feeling and get a personal ai-generated affirmation built for that exact moment — free, no sign-up required."
+        />
+        <link rel="canonical" href="https://smartaffirmations.com/generate" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Smart Affirmations" />
+        <meta property="og:url" content="https://smartaffirmations.com/generate" />
+        <meta property="og:title" content="Smart Affirmations" />
+        <meta
+          property="og:description"
+          content="tell us how you're feeling and get a personal ai-generated affirmation built for that exact moment — free, no sign-up required."
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Smart Affirmations" />
+        <meta
+          name="twitter:description"
+          content="tell us how you're feeling and get a personal ai-generated affirmation built for that exact moment — free, no sign-up required."
+        />
+      </Helmet>
+
       <section className="generate-hero">
         <p className="eyebrow">generate</p>
         <h1>what's on your mind?</h1>

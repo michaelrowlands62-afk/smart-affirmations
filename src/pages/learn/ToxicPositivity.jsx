@@ -10,6 +10,7 @@ export default function ToxicPositivity() {
           name="description"
           content="what toxic positivity actually is, how it differs from genuine affirmation practice, and the fair criticism that affirmations can sometimes function like toxic positivity when they're generic or dishonest."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-vs-toxic-positivity" />
       </Helmet>
 
       <article className="article">
@@ -165,7 +166,10 @@ export default function ToxicPositivity() {
               note — none of that is the problem. the problem is only ever when positivity is used
               to skip a step, to talk over a feeling instead of through it. an affirmation that's
               done its job honestly can still leave you feeling better. it just gets there by being
-              true first, not by being upbeat first and hoping true comes along for the ride.
+              true first, not by being upbeat first and hoping true comes along for the ride. a lot
+              of what tips an affirmation into toxic positivity overlaps with the{" "}
+              <Link to="/learn/common-affirmation-mistakes">common affirmation mistakes</Link>{" "}
+              guide — worth a look if this section struck a nerve.
             </p>
           </section>
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
 import { categories } from "../data/categories";
 import { affirmations } from "../data/affirmations";
@@ -47,6 +48,32 @@ export default function Explore() {
 
   return (
     <div className="page page-explore">
+      <Helmet>
+        <title>Smart Affirmations</title>
+        <meta
+          name="description"
+          content="browse hundreds of affirmations by category — wealth, love, health, confidence, anxiety, strength, morning, sleep, motivation and self-love — or search for exactly what you need."
+        />
+        {/* always canonicalizes to the unfiltered /explore URL — category filters use a query
+            param, and indexing every ?category= permutation as a separate page would create
+            duplicate content */}
+        <link rel="canonical" href="https://smartaffirmations.com/explore" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Smart Affirmations" />
+        <meta property="og:url" content="https://smartaffirmations.com/explore" />
+        <meta property="og:title" content="Smart Affirmations" />
+        <meta
+          property="og:description"
+          content="browse hundreds of affirmations by category — wealth, love, health, confidence, anxiety, strength, morning, sleep, motivation and self-love — or search for exactly what you need."
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Smart Affirmations" />
+        <meta
+          name="twitter:description"
+          content="browse hundreds of affirmations by category — wealth, love, health, confidence, anxiety, strength, morning, sleep, motivation and self-love — or search for exactly what you need."
+        />
+      </Helmet>
+
       <section className="explore-hero">
         <h1>explore</h1>
         <p className="tagline">browse affirmations by category, or search for what you need</p>
@@ -82,7 +109,9 @@ export default function Explore() {
       <section className="search-bar">
         <div className="search-input-wrap">
           <span className="search-icon">🔍</span>
+          <label htmlFor="explore-search" className="sr-only">search affirmations</label>
           <input
+            id="explore-search"
             type="text"
             placeholder="search affirmations..."
             value={query}

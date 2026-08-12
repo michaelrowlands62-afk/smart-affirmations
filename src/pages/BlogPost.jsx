@@ -84,6 +84,7 @@ export default function BlogPost() {
       <Helmet>
         <title>{post.title} | smart affirmations</title>
         <meta name="description" content={post.excerpt} />
+        <link rel="canonical" href={`https://smartaffirmations.com/blog/${post.slug}`} />
       </Helmet>
 
       <article className="article">

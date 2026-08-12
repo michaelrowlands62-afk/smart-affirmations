@@ -10,6 +10,7 @@ export default function PublicSpeaking() {
           name="description"
           content="affirmations for public speaking — how to settle nerves before a talk, reframe a racing heart as activation rather than danger, and recover mid-speech if something goes wrong."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-public-speaking" />
       </Helmet>
 
       <article className="article">

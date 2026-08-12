@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { categories } from "../data/categories";
 import { affirmationOfTheDay } from "../data/affirmations";
@@ -31,6 +32,29 @@ export default function Home() {
 
   return (
     <div className="page page-home">
+      <Helmet>
+        <title>Smart Affirmations</title>
+        <meta
+          name="description"
+          content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+        />
+        <link rel="canonical" href="https://smartaffirmations.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Smart Affirmations" />
+        <meta property="og:url" content="https://smartaffirmations.com/" />
+        <meta property="og:title" content="Smart Affirmations" />
+        <meta
+          property="og:description"
+          content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+        />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Smart Affirmations" />
+        <meta
+          name="twitter:description"
+          content="free ai-powered affirmations for wealth, love, health, confidence, anxiety and more. get a fresh affirmation every day, or generate your own in seconds."
+        />
+      </Helmet>
+
       <section className="hero">
         <span className="eyebrow">smart affirmations</span>
         <div className="hero-stamp-wrap">
@@ -165,7 +189,10 @@ export default function Home() {
           <span className="section-label">ai generator</span>
           <p className="prompt">tell us how you're feeling, get an affirmation made for you</p>
           <div className="generator-row">
-            <input type="text" placeholder="i'm nervous about a job interview" />
+            <label htmlFor="home-generator-teaser" className="sr-only">
+              tell us how you're feeling
+            </label>
+            <input id="home-generator-teaser" type="text" placeholder="i'm nervous about a job interview" />
             <Link to="/generate" className="btn btn-primary">generate</Link>
           </div>
         </div>

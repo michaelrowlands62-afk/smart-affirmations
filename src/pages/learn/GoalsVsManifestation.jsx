@@ -10,6 +10,7 @@ export default function GoalsVsManifestation() {
           name="description"
           content="how affirmations differ from goals and manifestation — a goal is a target with steps, manifestation often skips the action, and an affirmation is a mindset tool that supports real effort, not a substitute for it."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-vs-goals-and-manifestation" />
       </Helmet>
 
       <article className="article">
@@ -164,7 +165,8 @@ export default function GoalsVsManifestation() {
               your own head: right before a hard conversation, after a rejection that tempts you to
               quit, on the unmotivated tuesday that decides whether the habit survives past week one.
               none of that replaces the plan. all of it can determine whether you actually follow the
-              plan you already made.
+              plan you already made. for more on what an affirmation actually is and how it works,
+              see <Link to="/learn/what-are-affirmations">how affirmations work</Link>.
             </p>
           </section>
 

@@ -10,6 +10,7 @@ export default function HowToWrite() {
           name="description"
           content="a practical guide to how to write affirmations that actually feel true — present tense, personal and specific, believable, and rooted in your real values instead of generic positivity."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/how-to-write-your-own" />
       </Helmet>
 
       <article className="article">
@@ -200,7 +201,9 @@ export default function HowToWrite() {
               real person can support; and borrowing someone else's language so closely that the
               statement never actually sounds like you. the fix for all three is the same — slow
               down, get specific, and write the version you'd actually be willing to defend if
-              someone asked you why you believe it.
+              someone asked you why you believe it. for the fuller list of pitfalls, the{" "}
+              <Link to="/learn/common-affirmation-mistakes">common affirmation mistakes</Link>{" "}
+              guide goes through each one in more detail.
             </p>
           </section>
 

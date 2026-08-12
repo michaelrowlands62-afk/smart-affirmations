@@ -10,6 +10,7 @@ export default function WhatAreAffirmations() {
           name="description"
           content="what affirmations actually are, the psychology of affirmations behind them, and what research really says about whether affirmations work — including when they can backfire."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/what-are-affirmations" />
       </Helmet>
 
       <article className="article">
@@ -219,6 +220,12 @@ export default function WhatAreAffirmations() {
               life needs to change. used honestly, alongside the rest of what you're already
               doing to take care of yourself, they're a small, real, useful thing. used as a
               stand-in for everything else, they'll let you down.
+            </p>
+            <p>
+              once the idea makes sense, the next step is turning it into a line that actually
+              sounds like you — that's exactly what the{" "}
+              <Link to="/learn/how-to-write-your-own">how to write your own</Link> guide walks
+              through.
             </p>
           </section>
 

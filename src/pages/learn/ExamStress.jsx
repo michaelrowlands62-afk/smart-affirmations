@@ -10,6 +10,7 @@ export default function ExamStress() {
           name="description"
           content="exam stress affirmations for revision, the night before, and the exam room itself — plus how to separate your self-worth from a single result."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-exam-stress" />
       </Helmet>
 
       <article className="article">

@@ -10,6 +10,7 @@ export default function AffirmationsInSport() {
           name="description"
           content="how affirmations for sport and competitive self-talk relate to confidence under pressure, focus, and bouncing back after a setback — grounded in real, moderate sports psychology findings."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-in-sport" />
       </Helmet>
 
       <article className="article">

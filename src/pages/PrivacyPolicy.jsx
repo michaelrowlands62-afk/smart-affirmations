@@ -5,11 +5,12 @@ export default function PrivacyPolicy() {
   return (
     <div className="page page-legal">
       <Helmet>
-        <title>privacy policy | smart affirmations</title>
+        <title>Privacy Policy - Smart Affirmations</title>
         <meta
           name="description"
           content="what data smart affirmations collects, why, and how the third-party services we use (openai, elevenlabs, supabase, netlify) fit in. plain english, uk gdpr compliant."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/privacy-policy" />
       </Helmet>
 
       <header className="legal-hero">
@@ -78,26 +79,30 @@ export default function PrivacyPolicy() {
           <ul>
             <li>
               <strong>OpenAI</strong> — generates your affirmation text from what you type. see{" "}
-              <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noreferrer">
+              <a
+                href="https://openai.com/policies/privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 OpenAI's privacy policy
               </a>.
             </li>
             <li>
               <strong>ElevenLabs</strong> — generates the spoken audio for the "listen" feature. see{" "}
-              <a href="https://elevenlabs.io/privacy-policy" target="_blank" rel="noreferrer">
+              <a href="https://elevenlabs.io/privacy-policy" target="_blank" rel="noopener noreferrer">
                 ElevenLabs' privacy policy
               </a>.
             </li>
             <li>
               <strong>Supabase</strong> — powers our backend and database, including the daily rate
               limits described above. see{" "}
-              <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">
+              <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">
                 Supabase's privacy policy
               </a>.
             </li>
             <li>
               <strong>Netlify</strong> — hosts the site and handles contact form submissions. see{" "}
-              <a href="https://www.netlify.com/privacy/" target="_blank" rel="noreferrer">
+              <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">
                 Netlify's privacy policy
               </a>.
             </li>

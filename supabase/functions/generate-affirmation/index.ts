@@ -13,19 +13,39 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const DAILY_LIMIT = 3;
+// deviceId is client-supplied and trivially spoofable (see below), so this
+// caps total requests per IP per day as a harder-to-fake backstop. Set well
+// above DAILY_LIMIT so a household/office sharing one IP isn't penalized for
+// normal use — this exists to stop a single script cycling fake device ids,
+// not to further restrict ordinary visitors.
+const IP_DAILY_LIMIT = 20;
 const OPENAI_MODEL = "gpt-4o";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-dev-bypass",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+function getClientIp(req: Request): string | null {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  return forwardedFor ? forwardedFor.split(",")[0].trim() : null;
+}
 
-function jsonResponse(data: unknown, status = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+// Browser-enforced only — this doesn't stop direct/scripted calls to the
+// function (curl, server-to-server, etc. never send/respect an Origin header
+// the way a browser does), so it isn't an anti-abuse control on its own. It
+// does stop some other website's client-side JS from quietly calling this
+// function using our public keys. Real protection against direct abuse is
+// the per-device rate limit below, not CORS.
+const ALLOWED_ORIGINS = new Set([
+  "https://smartaffirmations.com",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+]);
+
+function buildCorsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get("origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.has(origin) ? origin : "https://smartaffirmations.com",
+    "Vary": "Origin",
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
 }
 
 const BASE_SYSTEM_PROMPT = `you write affirmations for "smart affirmations", a site with a lowercase, warm, punchy, no-nonsense voice — grounded and specific, never grandiose or unbelievable.
@@ -115,6 +135,14 @@ function buildUserPrompt(text: string, category: string): string {
 }
 
 Deno.serve(async (req: Request) => {
+  const corsHeaders = buildCorsHeaders(req);
+  function jsonResponse(data: unknown, status = 200): Response {
+    return new Response(JSON.stringify(data), {
+      status,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -149,14 +177,15 @@ Deno.serve(async (req: Request) => {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD, UTC
-
-  // Local-dev-only bypass: the frontend only sends this header when running under
-  // `vite dev` (import.meta.env.DEV), and it's honored here only if the request also
-  // came from a localhost origin — so it's a no-op for real visitors on the deployed
-  // site, where requests come from the production origin, not localhost.
-  const originHeader = req.headers.get("origin") ?? req.headers.get("referer") ?? "";
-  const isLocalOrigin = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(originHeader);
-  const bypassRateLimit = req.headers.get("x-dev-bypass") === "1" && isLocalOrigin;
+  const clientIp = getClientIp(req);
+  const rateLimitedResponse = () =>
+    jsonResponse(
+      {
+        error: "rate_limited",
+        message: "you've used all 3 free affirmations for today — come back tomorrow for more.",
+      },
+      429
+    );
 
   const { data: existing, error: fetchError } = await supabase
     .from("generation_limits")
@@ -170,14 +199,29 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "server_error" }, 500);
   }
 
-  if (!bypassRateLimit && existing && existing.request_count >= DAILY_LIMIT) {
-    return jsonResponse(
-      {
-        error: "rate_limited",
-        message: "you've used all 3 free affirmations for today — come back tomorrow for more.",
-      },
-      429
-    );
+  if (existing && existing.request_count >= DAILY_LIMIT) {
+    return rateLimitedResponse();
+  }
+
+  if (clientIp) {
+    // Fails open, not closed: this is a supplementary backstop on top of the
+    // device_id limit above, not the primary control, so a lookup error here
+    // (e.g. the `ip` column not existing yet on an unmigrated database)
+    // logs and skips the ip check rather than blocking every request.
+    const { data: ipRows, error: ipFetchError } = await supabase
+      .from("generation_limits")
+      .select("request_count")
+      .eq("ip", clientIp)
+      .eq("request_date", today);
+
+    if (ipFetchError) {
+      console.error("generate-affirmation: ip rate limit lookup failed", ipFetchError);
+    } else {
+      const ipTotal = (ipRows ?? []).reduce((sum, row) => sum + row.request_count, 0);
+      if (ipTotal >= IP_DAILY_LIMIT) {
+        return rateLimitedResponse();
+      }
+    }
   }
 
   const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -210,21 +254,18 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "generation_failed" }, 502);
   }
 
-  // Only count successful generations against the limit (skip entirely for the
-  // local-dev bypass so repeated local testing doesn't burn down the real quota).
-  if (!bypassRateLimit) {
-    if (existing) {
-      await supabase
-        .from("generation_limits")
-        .update({ request_count: existing.request_count + 1, updated_at: new Date().toISOString() })
-        .eq("id", existing.id);
-    } else {
-      await supabase.from("generation_limits").insert({
-        device_id: deviceId,
-        request_date: today,
-        request_count: 1,
-      });
-    }
+  if (existing) {
+    await supabase
+      .from("generation_limits")
+      .update({ request_count: existing.request_count + 1, ip: clientIp, updated_at: new Date().toISOString() })
+      .eq("id", existing.id);
+  } else {
+    await supabase.from("generation_limits").insert({
+      device_id: deviceId,
+      ip: clientIp,
+      request_date: today,
+      request_count: 1,
+    });
   }
 
   return jsonResponse({ affirmation });

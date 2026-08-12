@@ -10,6 +10,7 @@ export default function ScienceOfSelfTalk() {
           name="description"
           content="the science of self-talk — the difference between critical and supportive inner voice, cognitive reframing, self-affirmation theory, and how habitual self-talk shapes stress and confidence over time."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/the-science-of-self-talk" />
       </Helmet>
 
       <article className="article">

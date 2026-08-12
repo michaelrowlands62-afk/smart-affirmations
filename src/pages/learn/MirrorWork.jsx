@@ -10,6 +10,7 @@ export default function MirrorWork() {
           name="description"
           content="what mirror work actually is, where the practice of mirror work affirmations comes from, why eye contact with yourself is believed to matter, and what the evidence honestly says."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/mirror-work" />
       </Helmet>
 
       <article className="article">
@@ -189,6 +190,8 @@ export default function MirrorWork() {
               a written or spoken affirmation away from a mirror still carries the same underlying
               principles and the same general research behind self-affirmation. you can always come
               back to the mirror later, once a plain affirmation habit already feels familiar.
+              smart affirmations' <Link to="/explore?category=confidence">confidence category</Link>{" "}
+              is a good place to find lines that work well either way, mirror or no mirror.
             </p>
           </section>
 

@@ -5,11 +5,12 @@ export default function About() {
   return (
     <div className="page page-about">
       <Helmet>
-        <title>about smart affirmations | built by a black belt, tested under pressure</title>
+        <title>About - Smart Affirmations</title>
         <meta
           name="description"
           content="the story behind smart affirmations — a father-daughter project built by a lifelong martial artist who first tried affirmations as a teenager and never stopped."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/about" />
       </Helmet>
 
       <article className="article">

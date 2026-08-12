@@ -10,6 +10,7 @@ export default function SleepAffirmations() {
           name="description"
           content="how to use sleep affirmations as part of a wind-down routine, why the pre-sleep mindset shift is where the real value is, and an honest look at claims about affirmations 'absorbed' during sleep."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-while-you-sleep" />
       </Helmet>
 
       <article className="article">

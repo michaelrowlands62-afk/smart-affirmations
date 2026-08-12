@@ -10,6 +10,7 @@ export default function BodyImage() {
           name="description"
           content="affirmations for body image that focus on respect, function, and self-acceptance instead of appearance-based validation — a gentle, non-prescriptive approach with no diet culture or before/after framing."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/affirmations-for-body-image" />
       </Helmet>
 
       <article className="article">

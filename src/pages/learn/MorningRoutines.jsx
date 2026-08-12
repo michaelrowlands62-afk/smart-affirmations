@@ -10,6 +10,7 @@ export default function MorningRoutines() {
           name="description"
           content="how to build a morning affirmations routine that actually survives past the first week — timing, habit-stacking, and keeping the practice short enough to stick with long-term."
         />
+        <link rel="canonical" href="https://smartaffirmations.com/learn/morning-affirmation-routines" />
       </Helmet>
 
       <article className="article">

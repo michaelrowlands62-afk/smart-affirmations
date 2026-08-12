@@ -9,6 +9,15 @@ create table categories (
   created_at timestamptz default now()
 );
 
+-- read-only reference data — safe for anyone to read, nobody should write to
+-- it through the anon/authenticated roles (only the dashboard / service role).
+alter table categories enable row level security;
+
+create policy "anyone can read categories"
+  on categories for select
+  to anon, authenticated
+  using (true);
+
 create table affirmations (
   id uuid primary key default gen_random_uuid(),
   category_id uuid references categories(id),
@@ -17,12 +26,26 @@ create table affirmations (
   created_at timestamptz default now()
 );
 
+-- same as categories: public read-only content, no client-side writes.
+alter table affirmations enable row level security;
+
+create policy "anyone can read affirmations"
+  on affirmations for select
+  to anon, authenticated
+  using (true);
+
 create table saved_affirmations (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users(id),
   affirmation_id uuid references affirmations(id),
   created_at timestamptz default now()
 );
+
+-- this table doesn't exist yet and there's no auth system live on the site
+-- (see PrivacyPolicy.jsx — "no accounts, no logins"). RLS is enabled with no
+-- policies so it's deny-all by default; add real per-user policies
+-- (e.g. `using (auth.uid() = user_id)`) only once auth actually ships.
+alter table saved_affirmations enable row level security;
 
 create table contact_submissions (
   id uuid primary key default gen_random_uuid(),
@@ -49,6 +72,10 @@ create policy "anon can submit contact form"
 create table generation_limits (
   id uuid primary key default gen_random_uuid(),
   device_id text not null,
+  -- client IP at request time — device_id alone is client-supplied and
+  -- trivially spoofable, so the edge function also sums request_count by ip
+  -- per day as a harder-to-fake backstop. nullable so older rows are fine.
+  ip text,
   request_date date not null default current_date,
   request_count integer not null default 1,
   updated_at timestamptz not null default now(),
@@ -56,6 +83,8 @@ create table generation_limits (
 );
 
 alter table generation_limits enable row level security;
+
+create index generation_limits_ip_date_idx on generation_limits (ip, request_date);
 
 -- tracks the text-to-speech edge function's daily rate limit for ElevenLabs
 -- voice generations, one row per device per day. separate from
@@ -66,6 +95,7 @@ alter table generation_limits enable row level security;
 create table tts_limits (
   id uuid primary key default gen_random_uuid(),
   device_id text not null,
+  ip text,
   request_date date not null default current_date,
   request_count integer not null default 1,
   updated_at timestamptz not null default now(),
@@ -73,3 +103,5 @@ create table tts_limits (
 );
 
 alter table tts_limits enable row level security;
+
+create index tts_limits_ip_date_idx on tts_limits (ip, request_date);
