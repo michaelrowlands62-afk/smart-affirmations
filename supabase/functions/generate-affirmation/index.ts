@@ -34,6 +34,7 @@ function getClientIp(req: Request): string | null {
 // the per-device rate limit below, not CORS.
 const ALLOWED_ORIGINS = new Set([
   "https://smartaffirmations.com",
+  "https://smart-affirmations.netlify.app",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ]);
